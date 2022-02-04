@@ -1,3 +1,11 @@
-require('dotenv').config();
+const Server = require('./models/server')
 
-console.log('app is runnig');
+require('dotenv').config()
+
+//enable json parsed
+
+
+const server = new Server()
+server.start();
+
+//starting the server
