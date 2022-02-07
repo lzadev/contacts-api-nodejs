@@ -9,6 +9,7 @@ const {
   updateContact,
   deleteContact,
 } = require('../controllers/contact.controller')
+const { existsContactById, existCategory } = require('../helpers/database-validations')
 
 router.get('/', getAllContacts)
 router.post(
@@ -17,17 +18,36 @@ router.post(
     check('firstName', 'The firstName is required').not().isEmpty(),
     check('lastName', 'The lastName is required').not().isEmpty(),
     check('phoneNumber', 'The phoneNumber is required').not().isEmpty(),
-    check('phoneNumber', 'You must provide a valid phoneNumber').isLength({min:10,max:10}),
-    check('phoneNumber').custom(pNumber =>{
-      if(pNumber.includes('-')){
-        throw new Error('phoneNumber cannot container any specials charaters')
-      }
+    check('phoneNumber', 'You must provide a valid phoneNumber').isLength({
+      min: 10,
+      max: 10,
     }),
+    check('category').custom(existCategory),
     validateErrrors,
   ],
   createContact,
 )
-router.put('/:id', updateContact)
-router.delete('/:id', deleteContact)
+router.put('/:id',[
+  check('id', 'You must provide a valid id').isMongoId(),
+  check('id').custom(existsContactById),
+  check('firstName', 'The firstName is required').not().isEmpty(),
+  check('lastName', 'The lastName is required').not().isEmpty(),
+  check('phoneNumber', 'The phoneNumber is required').not().isEmpty(),
+  check('phoneNumber', 'You must provide a valid phoneNumber').isLength({
+    min: 10,
+    max: 10,
+  }),
+  check('category').custom(existCategory),
+  validateErrrors,
+], updateContact)
+router.delete(
+  '/:id',
+  [
+    check('id', 'You must provide a valid id').isMongoId(),
+    check('id').custom(existsContactById),
+    validateErrrors,
+  ],
+  deleteContact,
+)
 
 module.exports = router

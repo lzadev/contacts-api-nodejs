@@ -3,17 +3,19 @@ const connect = require('../database/connection')
 
 //routes imports
 const contactRouter = require('../routes/contacts.routes')
+const categoryRouter = require('../routes/category.routes')
 
 class Server {
   constructor() {
     this.app = express()
-    this.middlewares();
+    this.middlewares()
     this.routes()
   }
 
   //all routes
   routes() {
     this.app.use('/api/contacts', contactRouter)
+    this.app.use('/api/contacts/categories', categoryRouter)
   }
 
   //middlewares
